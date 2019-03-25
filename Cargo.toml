@@ -7,4 +7,12 @@ authors = ["Alex Crichton <alex@alexcrichton.com>"]
 path = "utils/blank.rs"
 
 [dependencies]
-wasm-bindgen = "0.2"
+icetea_wasm = { git = "https://github.com/TradaTech/icetea-wasm" }
+serde = "1.0.88"
+serde_derive = "1.0.88"
+console_error_panic_hook = "0.1.6"
+js-sys = "0.3.14"
+
+[dependencies.wasm-bindgen]
+version = "= 0.2.37"
+features = ["serde-serialize"]

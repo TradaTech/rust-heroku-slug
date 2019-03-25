@@ -1,7 +1,6 @@
-var qs = require('querystring');
-var cargo = require('./cargo');
-var rustc = require('./rustc');
-var rustfmt = require('./rustfmt');
+var cargo = require("./cargo");
+var rustc = require("./rustc");
+var rustfmt = require("./rustfmt");
 
 function notAllowed(res) {
   res.writeHead(503);
@@ -14,18 +13,17 @@ function showError(res, err) {
 }
 
 function readFormData(request, callback) {
-  var body = '';
+  var body = "";
 
-  request.on('data', function (data) {
+  request.on("data", function(data) {
     body += data;
 
     // Too much POST data, kill the connection!
     // 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
-    if (body.length > 1e6)
-      request.connection.destroy();
+    if (body.length > 1e6) request.connection.destroy();
   });
 
-  request.on('end', function () {
+  request.on("end", function() {
     try {
       callback(null, JSON.parse(body));
     } catch (ex) {
@@ -36,8 +34,11 @@ function readFormData(request, callback) {
 
 module.exports = function handleRequest(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET, POST');
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  res.setHeader("Access-Control-Allow-Methods", "OPTIONS, GET, POST");
 
   if (req.method == "OPTIONS") {
     res.writeHead(200);
@@ -51,7 +52,7 @@ module.exports = function handleRequest(req, res) {
       if (err) return showError(res, err);
       cargo(post.tar, post.options, (err, result) => {
         if (err) return showError(res, err);
-        res.setHeader('Content-type', 'application/json');
+        res.setHeader("Content-type", "application/json");
         res.writeHead(200);
         res.end(JSON.stringify(result));
       });
@@ -65,7 +66,7 @@ module.exports = function handleRequest(req, res) {
       if (err) return showError(res, err);
       rustc(post.code, post.options, (err, result) => {
         if (err) return showError(res, err);
-        res.setHeader('Content-type', 'application/json');
+        res.setHeader("Content-type", "application/json");
         res.writeHead(200);
         res.end(JSON.stringify(result));
       });
@@ -79,7 +80,7 @@ module.exports = function handleRequest(req, res) {
       if (err) return showError(res, err);
       rustfmt(post.code, post.options, (err, result) => {
         if (err) return showError(res, err);
-        res.setHeader('Content-type', 'application/json');
+        res.setHeader("Content-type", "application/json");
         res.writeHead(200);
         res.end(JSON.stringify(result));
       });
